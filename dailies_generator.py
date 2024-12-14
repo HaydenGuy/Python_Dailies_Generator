@@ -9,16 +9,26 @@ Version: 1.0
 """
 
 import sys
+import os
+
 from PIL import Image, ImageDraw, ImageFont
 from datetime import date
 
- # Print message and exit unless a single argument is given
+# Print error message and exit unless a single argument is given
 if len(sys.argv) != 2:
-    print("Usage: ./script.py <directory>")
+    print("Usage: ./script.py <version directory>")
     sys.exit(1)
 
-directory = sys.argv[1]
-    
+# Full path of the passed dir
+version_dir_path = sys.argv[1]
+
+# Split the path into a list eg. ["home", "user", "Documents"]
+path_split = version_dir_path.strip(os.sep).split(os.sep)
+
+# Last item in list is version, -3 -2 is the Seq and Shot
+version_text = path_split[-1]
+name_text = f"{path_split[-3]} : {path_split[-2]}"
+
 # Location of the dailies template
 template = Image.open("/home/hayden/Downloads/dailies/dailies_template.jpg")
 
@@ -33,15 +43,14 @@ draw = ImageDraw.Draw(template)
 current_date = date.today()
 date_text = current_date.strftime("%Y-%m-%d")
 
-version_text = str(input("Enter version number: "))
-
-# Positions of where to on the template
+# Positions of where to draw on the template
 date_pos = (240, 75)
-version_pos = (1480, 75)
+version_pos = (1400, 75)
+name_pos = (240, 310)
 
 # Draws on the template with given position, text, colour, and font 
 draw.text(date_pos, date_text, fill="black", font=font)
 draw.text(version_pos, version_text, fill="black", font=font)
-
+draw.text(name_pos, name_text, fill="black", font=font)
 
 template.show() # Placeholder to show the image once drawing has happened
