@@ -8,10 +8,17 @@ Date: 2024-12-14
 Version: 1.0
 """
 
+import sys
 from PIL import Image, ImageDraw, ImageFont
 from datetime import date
 
+ # Print message and exit unless a single argument is given
+if len(sys.argv) != 2:
+    print("Usage: ./script.py <directory>")
+    sys.exit(1)
 
+directory = sys.argv[1]
+    
 # Location of the dailies template
 template = Image.open("/home/hayden/Downloads/dailies/dailies_template.jpg")
 
