@@ -11,8 +11,9 @@ Version: 1.0
 from PIL import Image, ImageDraw, ImageFont
 from datetime import date
 
+
 # Location of the dailies template
-template = Image.open("/home/hayden/Downloads/dailies/dailies_template.png")
+template = Image.open("/home/hayden/Downloads/dailies/dailies_template.jpg")
 
 # Initializing font to use with path and size
 font_path = "/usr/share/fonts/open-sans/OpenSans-Bold.ttf"
@@ -25,10 +26,15 @@ draw = ImageDraw.Draw(template)
 current_date = date.today()
 date_text = current_date.strftime("%Y-%m-%d")
 
-# Position of where to draw date on the template
-date_pos = (225, 75)
+version_text = str(input("Enter version number: "))
 
-# Draws the date on the template with given position, text, colour, and font 
+# Positions of where to on the template
+date_pos = (240, 75)
+version_pos = (1480, 75)
+
+# Draws on the template with given position, text, colour, and font 
 draw.text(date_pos, date_text, fill="black", font=font)
+draw.text(version_pos, version_text, fill="black", font=font)
+
 
 template.show() # Placeholder to show the image once drawing has happened
