@@ -74,6 +74,24 @@ def template_fill(version_dir_path, root_path, path_split):
     # Save the output file as png
     template.save(template_output, format="PNG")
 
+# Create a 5 second video of the dailies template
+def create_dailies_template_intro_card(version_dir_path):
+    command = [
+        "ffmpeg", 
+        "-loop", "1",                               # Loop the input image
+        "-i", f"{version_dir_path}/0000.png",       # Input image file
+        "-c:v", "libx264",                          # Specify the video codec
+        "-t", "5",                                  # Duration of the video
+        "-pix_fmt", "yuv420p",                      # Ensure compatibility with most players
+        f"{version_dir_path}/template_intro_card.mp4"   # Output video file
+    ]
+
+    # Tries to run the ffmpeg command with subprocess
+    try:
+        subprocess.run(command, check=True)
+    except subprocess.CalledProcessError as e: # Raised when exit with a non-zero status
+        print(f"Error: {e}")
+
 # Creates an mp4 from a sequence of PNG images
 def create_video_from_img_sequence(version_dir_path, output_path, path_split):
     input_pattern = f"{version_dir_path}/%04d.png" # 0000.png
@@ -116,7 +134,8 @@ def main():
     output_path = f"/{root_path}/output"
 
     template_fill(version_dir_path, root_path, path_split)
-    create_video_from_img_sequence(version_dir_path, output_path, path_split)
+    create_dailies_template_intro_card(version_dir_path)
+    # create_video_from_img_sequence(version_dir_path, output_path, path_split)
 
 if __name__ == "__main__":
    main()
