@@ -74,11 +74,12 @@ def template_fill(version_dir_path, root_path, path_split):
     # Save the output file as png
     template.save(template_output, format="PNG")
 
+# Creates an mp4 from a sequence of PNG images
 def create_video_from_img_sequence(version_dir_path, output_path, path_split):
-    input_pattern = f"{version_dir_path}/%04d.png"
-    video_name = f"{path_split[-3]}_{path_split[-2]}_{path_split[-1]}.mp4"
+    input_pattern = f"{version_dir_path}/%04d.png" # 0000.png
+    video_name = f"{path_split[-3]}_{path_split[-2]}_{path_split[-1]}.mp4" # Seq#_Shot#_v#.mp4
 
-    # FFmpeg command
+    # ffmpeg command 
     command = [
         "ffmpeg",
         "-framerate", str(24),
@@ -88,10 +89,11 @@ def create_video_from_img_sequence(version_dir_path, output_path, path_split):
         f"{output_path}/{video_name}"
     ]
 
+    # Tries to run the ffmpeg command with subprocess
     try:
-        subprocess.run(command, check=True)
+        subprocess.run(command, check=True) # check=True : checks exit with a non-zero status
         print(f"Video successfully saved as {video_name}")
-    except subprocess.CalledProcessError as e:
+    except subprocess.CalledProcessError as e: # Raised when exit with a non-zero status
         print(f"Error: {e}")
 
 
