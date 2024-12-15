@@ -15,19 +15,16 @@ from PIL import Image, ImageDraw, ImageFont
 from datetime import date
 
 # Fills in the dailies template
-def template_fill(version_dir_path):
-    # Split the path into a list eg. ["home", "user", "Documents"]
-    path_split = version_dir_path.strip(os.sep).split(os.sep)
+def template_fill(version_dir_path, path_split):
+    # Gets the root folder path
+    root_path = "/".join(path_split[:-3])
+    
+    # Full path of the dailies template
+    template = Image.open(f"/{root_path}/dailies_template.jpg")
 
     # Last item in list is version, -3 -2 is the Seq and Shot
     version_text = path_split[-1]
     name_text = f"{path_split[-3]} : {path_split[-2]}"
-
-    # Gets the root folder path
-    template_path = "/".join(path_split[:-3])
-    
-    # Full path of the dailies template
-    template = Image.open(f"/{template_path}/dailies_template.jpg")
 
     # Initializing font to use with path and size
     font_path = "/usr/share/fonts/open-sans/OpenSans-Bold.ttf"
@@ -79,6 +76,9 @@ def template_fill(version_dir_path):
     # Save the output file as png
     template.save(template_output, format="PNG")
 
+# def create_video_from_img_sequence(version_dir_path):
+
+
 def main():
     # Print error message and exit unless a single argument is given
     if len(sys.argv) != 2:
@@ -88,7 +88,10 @@ def main():
     # Full path of the passed dir
     version_dir_path = sys.argv[1]
 
-    template_fill(version_dir_path)
+    # Split the path into a list eg. ["home", "user", "Documents"]
+    path_split = version_dir_path.strip(os.sep).split(os.sep)
+
+    template_fill(version_dir_path, path_split)
 
 if __name__ == "__main__":
    main()
