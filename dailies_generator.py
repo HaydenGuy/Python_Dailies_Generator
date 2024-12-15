@@ -77,7 +77,11 @@ def main():
     draw.text(name_pos, name_text, fill="black", font=large_font)
     draw.text(notes_pos, notes_text, fill="black", font=small_font)
 
-    template.show() # Placeholder to show the image once drawing has happened
+    # Set the name of the output file
+    template_output = f"{version_dir_path}0000.png"
+
+    # Save the output file as png
+    template.save(template_output, format="PNG")
 
 if __name__ == "__main__":
    main()
