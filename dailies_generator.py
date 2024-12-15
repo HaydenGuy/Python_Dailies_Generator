@@ -23,8 +23,11 @@ def template_fill(version_dir_path):
     version_text = path_split[-1]
     name_text = f"{path_split[-3]} : {path_split[-2]}"
 
-    # Location of the dailies template
-    template = Image.open("/home/hayden/Downloads/dailies/dailies_template.jpg")
+    # Gets the root folder path
+    template_path = "/".join(path_split[:-3])
+    
+    # Full path of the dailies template
+    template = Image.open(f"/{template_path}/dailies_template.jpg")
 
     # Initializing font to use with path and size
     font_path = "/usr/share/fonts/open-sans/OpenSans-Bold.ttf"
