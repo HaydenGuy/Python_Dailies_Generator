@@ -93,7 +93,7 @@ def create_dailies_template_intro_card(version_dir_path):
         print(f"Error: {e}")
 
 # Creates an mp4 from a sequence of PNG images
-def create_video_from_img_sequence(version_dir_path, output_path, path_split):
+def create_video_from_img_sequence(version_dir_path, path_split):
     input_pattern = f"{version_dir_path}/%04d.png" # 0000.png
     video_name = f"{path_split[-3]}_{path_split[-2]}_{path_split[-1]}.mp4" # Seq#_Shot#_v#.mp4
 
@@ -104,7 +104,7 @@ def create_video_from_img_sequence(version_dir_path, output_path, path_split):
         "-i", input_pattern, 
         "-c:v", "libx264",
         "-pix_fmt", "yuv420p",
-        f"{output_path}/{video_name}"
+        f"{version_dir_path}/{video_name}"
     ]
 
     # Tries to run the ffmpeg command with subprocess
@@ -113,6 +113,8 @@ def create_video_from_img_sequence(version_dir_path, output_path, path_split):
         print(f"Video successfully saved as {video_name}")
     except subprocess.CalledProcessError as e: # Raised when exit with a non-zero status
         print(f"Error: {e}")
+
+    return video_name
 
 
 def main():
@@ -135,7 +137,7 @@ def main():
 
     template_fill(version_dir_path, root_path, path_split)
     create_dailies_template_intro_card(version_dir_path)
-    # create_video_from_img_sequence(version_dir_path, output_path, path_split)
+    video_name = create_video_from_img_sequence(version_dir_path, path_split)
 
 if __name__ == "__main__":
    main()
