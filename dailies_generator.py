@@ -18,7 +18,7 @@ from datetime import date
 # Fills in the dailies template
 def template_fill(version_dir_path, root_path, path_split):
     # Full path of the dailies template
-    template = Image.open(f"/{root_path}/dailies_template.jpg")
+    template = Image.open(f"/{root_path}/dailies_template.png")
 
     # Last item in list is version, -3 -2 is the Seq and Shot
     version_text = path_split[-1]
@@ -100,7 +100,7 @@ def create_video_from_img_sequence(version_dir_path, path_split):
     # ffmpeg command 
     command = [
         "ffmpeg",
-        "-framerate", str(24),
+        "-framerate", "24",
         "-i", input_pattern, 
         "-c:v", "libx264",
         "-pix_fmt", "yuv420p",
@@ -110,12 +110,33 @@ def create_video_from_img_sequence(version_dir_path, path_split):
     # Tries to run the ffmpeg command with subprocess
     try:
         subprocess.run(command, check=True) # check=True : checks exit with a non-zero status
-        print(f"Video successfully saved as {video_name}")
     except subprocess.CalledProcessError as e: # Raised when exit with a non-zero status
         print(f"Error: {e}")
 
     return video_name
 
+# Concatenates two videos into one using ffmpeg
+def combine_intro_card_and_version_video(version_dir_path, video_name, output_path):
+    command = [
+        "ffmpeg",
+        "-i", f"{version_dir_path}template_intro_card.mp4", # First input video
+        "-i", f"{version_dir_path}{video_name}",            # Second input video
+        "-filter_complex",                                  # Advanced export options
+        "[0:v:0][1:v:0]concat=n=2:v=1:a=0[outv]",           # Concatenate first and second video
+        "-map", "[outv]",                                   # Map the concatenated video stream to the output file
+        "-c:v", "libx264",                                  # Set the video codec to H.264
+        "-crf", "23",                                       # Specify CRF (lower is higher quality)
+        "-preset", "slow",                                  # Use slower preset for better quality
+        "-pix_fmt", "yuv420p",                              # Pixel format
+        f"{output_path}/{video_name}"                       # Output full path
+    ]
+
+    # Tries to run the ffmpeg command with subprocess
+    try:
+        subprocess.run(command, check=True)  # check=True : checks exit with a non-zero status
+        print(f"Video successfully saved as {video_name}")
+    except subprocess.CalledProcessError as e: # Raised when exit with a non-zero status
+        print(f"Error: {e}")
 
 def main():
     # Print error message and exit unless a single argument is given
@@ -138,6 +159,7 @@ def main():
     template_fill(version_dir_path, root_path, path_split)
     create_dailies_template_intro_card(version_dir_path)
     video_name = create_video_from_img_sequence(version_dir_path, path_split)
+    combine_intro_card_and_version_video(version_dir_path, video_name, output_path)
 
 if __name__ == "__main__":
    main()
