@@ -134,8 +134,22 @@ def combine_intro_card_and_version_video(version_dir_path, video_name, output_pa
     # Tries to run the ffmpeg command with subprocess
     try:
         subprocess.run(command, check=True)  # check=True : checks exit with a non-zero status
-        print(f"Video successfully saved as {video_name}")
+        print(f"Video saved: {output_path}/{video_name}")
     except subprocess.CalledProcessError as e: # Raised when exit with a non-zero status
+        print(f"Error: {e}")
+
+# Removes the temporary png and videos used to create the dailies video
+def file_cleanup(version_dir_path, video_name):
+    template_png = f"{version_dir_path}0000.png"
+    template_video = f"{version_dir_path}template_intro_card.mp4"
+    img_seq_video = f"{version_dir_path}{video_name}"
+
+    delete_files = [template_png, template_video, img_seq_video]
+
+    # rm on a list of file paths
+    try:
+        subprocess.run(["rm"] + delete_files, check=True)
+    except subprocess.CalledProcessError as e:
         print(f"Error: {e}")
 
 def main():
@@ -160,6 +174,7 @@ def main():
     create_dailies_template_intro_card(version_dir_path)
     video_name = create_video_from_img_sequence(version_dir_path, path_split)
     combine_intro_card_and_version_video(version_dir_path, video_name, output_path)
+    file_cleanup(version_dir_path, video_name)
 
 if __name__ == "__main__":
    main()
