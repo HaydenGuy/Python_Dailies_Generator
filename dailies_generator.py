@@ -14,15 +14,8 @@ import os
 from PIL import Image, ImageDraw, ImageFont
 from datetime import date
 
-def main():
-    # Print error message and exit unless a single argument is given
-    if len(sys.argv) != 2:
-        print("Usage: ./script.py <version directory>")
-        sys.exit(1)
-
-    # Full path of the passed dir
-    version_dir_path = sys.argv[1]
-
+# Fills in the dailies template
+def template_fill(version_dir_path):
     # Split the path into a list eg. ["home", "user", "Documents"]
     path_split = version_dir_path.strip(os.sep).split(os.sep)
 
@@ -82,6 +75,17 @@ def main():
 
     # Save the output file as png
     template.save(template_output, format="PNG")
+
+def main():
+    # Print error message and exit unless a single argument is given
+    if len(sys.argv) != 2:
+        print("Usage: ./script.py <version directory>")
+        sys.exit(1)
+
+    # Full path of the passed dir
+    version_dir_path = sys.argv[1]
+
+    template_fill(version_dir_path)
 
 if __name__ == "__main__":
    main()
