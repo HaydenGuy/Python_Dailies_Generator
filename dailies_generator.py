@@ -10,6 +10,7 @@ Version: 1.0
 
 import sys
 import os
+import subprocess
 
 from PIL import Image, ImageDraw, ImageFont
 from datetime import date
@@ -73,9 +74,25 @@ def template_fill(version_dir_path, root_path, path_split):
     # Save the output file as png
     template.save(template_output, format="PNG")
 
-def create_video_from_img_sequence(version_dir_path, output_path):
+def create_video_from_img_sequence(version_dir_path, output_path, path_split):
     input_pattern = f"{version_dir_path}/%04d.png"
-    # ffmpeg -framerate 24 -i "%04d.png" -c:v libx264 -pix_fmt yuv420p /path/to/folder/my_custom_video_name.mp4
+    video_name = f"{path_split[-3]}_{path_split[-2]}_{path_split[-1]}.mp4"
+
+    # FFmpeg command
+    command = [
+        "ffmpeg",
+        "-framerate", str(24),
+        "-i", input_pattern, 
+        "-c:v", "libx264",
+        "-pix_fmt", "yuv420p",
+        f"{output_path}/{video_name}"
+    ]
+
+    try:
+        subprocess.run(command, check=True)
+        print(f"Video successfully saved as {video_name}")
+    except subprocess.CalledProcessError as e:
+        print(f"Error: {e}")
 
 
 def main():
@@ -96,7 +113,8 @@ def main():
     # Path for the dailies outputs
     output_path = f"/{root_path}/output"
 
-    template_fill(version_dir_path, output_path)
+    template_fill(version_dir_path, root_path, path_split)
+    create_video_from_img_sequence(version_dir_path, output_path, path_split)
 
 if __name__ == "__main__":
    main()
