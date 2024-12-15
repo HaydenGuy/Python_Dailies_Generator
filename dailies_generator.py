@@ -73,6 +73,9 @@ def template_fill(version_dir_path, root_path, path_split):
     # Save the output file as png
     template.save(template_output, format="PNG")
 
+def create_video_from_img_sequence(version_dir_path, output_path):
+    input_pattern = f"{version_dir_path}/%04d.png"
+    # ffmpeg -framerate 24 -i "%04d.png" -c:v libx264 -pix_fmt yuv420p /path/to/folder/my_custom_video_name.mp4
 
 
 def main():
@@ -90,7 +93,10 @@ def main():
     # Gets the root folder path
     root_path = "/".join(path_split[:-3])
 
-    template_fill(version_dir_path, root_path, path_split)
+    # Path for the dailies outputs
+    output_path = f"/{root_path}/output"
+
+    template_fill(version_dir_path, output_path)
 
 if __name__ == "__main__":
    main()
