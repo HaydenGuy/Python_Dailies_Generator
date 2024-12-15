@@ -15,10 +15,7 @@ from PIL import Image, ImageDraw, ImageFont
 from datetime import date
 
 # Fills in the dailies template
-def template_fill(version_dir_path, path_split):
-    # Gets the root folder path
-    root_path = "/".join(path_split[:-3])
-    
+def template_fill(version_dir_path, root_path, path_split):
     # Full path of the dailies template
     template = Image.open(f"/{root_path}/dailies_template.jpg")
 
@@ -76,7 +73,6 @@ def template_fill(version_dir_path, path_split):
     # Save the output file as png
     template.save(template_output, format="PNG")
 
-# def create_video_from_img_sequence(version_dir_path):
 
 
 def main():
@@ -91,7 +87,10 @@ def main():
     # Split the path into a list eg. ["home", "user", "Documents"]
     path_split = version_dir_path.strip(os.sep).split(os.sep)
 
-    template_fill(version_dir_path, path_split)
+    # Gets the root folder path
+    root_path = "/".join(path_split[:-3])
+
+    template_fill(version_dir_path, root_path, path_split)
 
 if __name__ == "__main__":
    main()
