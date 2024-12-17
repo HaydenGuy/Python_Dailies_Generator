@@ -138,6 +138,38 @@ def combine_intro_card_and_version_video(version_dir_path, video_name, output_pa
     except subprocess.CalledProcessError as e: # Raised when exit with a non-zero status
         print(f"Error: {e}")
 
+# Adds audio to a video using ffmpeg
+def add_audio(version_dir_path, video_name, output_path, path_split):
+    # Gets the shot directory path
+    shot_dir_path = os.path.dirname(version_dir_path.rstrip('/')) + "/"
+    
+    # Gets the audio file path from the shot directory
+    audio_path = f"{shot_dir_path}{path_split[-3]}_{path_split[-2]}_audio.wav"
+
+    # Gets the video name from output with no extension
+    video_no_ext = os.path.splitext(os.path.basename(video_name))[0]
+
+    command = [
+        "ffmpeg",
+        "-i", f"{output_path}/{video_name}",                # Input video file
+        "-i", audio_path,                                   # Input audio file
+        "-filter_complex", "adelay=5000|5000[aud]",         # Add 5s delay to audio
+        "-map", "0:v",                                      # Map video stream from the first input
+        "-map", "[aud]",                                    # Map audio stream from the second input
+        "-c:v", "copy",                                     # Copy the video stream without re-encoding
+        "-shortest",                                        # End output when the shortest stream finishes
+        f"{output_path}/{video_no_ext}_audio.mp4"           # Output file path
+    ]
+
+    # Tries to run the ffmpeg command with subprocess
+    try:
+        subprocess.run(command, check=True) # check=True : checks exit with a non-zero status
+    except subprocess.CalledProcessError as e:
+        if e.returncode == 254: # Exit 254 if the audio file is not found 
+            print(f"No audio file found: {audio_path}")
+        else:
+            print(f"Error: {e}")
+
 # Removes the temporary png and videos used to create the dailies video
 def file_cleanup(version_dir_path, video_name):
     template_png = f"{version_dir_path}0000.png"
@@ -161,6 +193,19 @@ def main():
     # Full path of the passed dir
     version_dir_path = sys.argv[1]
 
+    # Check to see if there is audio to add
+    while True:
+        audio_choice = input("Do you wish to add an audio file? (y/n): ")
+
+        if audio_choice.lower() == "y":
+            audio_choice = "y"
+            break
+        elif audio_choice.lower() == "n":
+            audio_choice = "n"
+            break
+        else:
+            continue
+        
     # Split the path into a list eg. ["home", "user", "Documents"]
     path_split = version_dir_path.strip(os.sep).split(os.sep)
 
@@ -174,6 +219,13 @@ def main():
     create_dailies_template_intro_card(version_dir_path)
     video_name = create_video_from_img_sequence(version_dir_path, path_split)
     combine_intro_card_and_version_video(version_dir_path, video_name, output_path)
+    
+    # If there is audio to add run the add audio function
+    if audio_choice == "y":
+        add_audio(version_dir_path, video_name, output_path, path_split)
+    else:
+        pass
+
     file_cleanup(version_dir_path, video_name)
 
 if __name__ == "__main__":
