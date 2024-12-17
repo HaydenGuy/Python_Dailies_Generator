@@ -15,6 +15,8 @@ import subprocess
 from PIL import Image, ImageDraw, ImageFont
 from datetime import date
 
+FONT_PATH = "/usr/share/fonts/open-sans/OpenSans-Bold.ttf"
+
 # Fills in the dailies template
 def template_fill(version_dir_path, root_path, path_split):
     # Full path of the dailies template
@@ -25,9 +27,8 @@ def template_fill(version_dir_path, root_path, path_split):
     name_text = f"{path_split[-3]} : {path_split[-2]}"
 
     # Initializing font to use with path and size
-    font_path = "/usr/share/fonts/open-sans/OpenSans-Bold.ttf"
-    large_font = ImageFont.truetype(font_path, size=120)
-    small_font = ImageFont.truetype(font_path, size=60)
+    large_font = ImageFont.truetype(FONT_PATH, size=120)
+    small_font = ImageFont.truetype(FONT_PATH, size=60)
 
     # Initialize drawing on the template
     draw = ImageDraw.Draw(template)
