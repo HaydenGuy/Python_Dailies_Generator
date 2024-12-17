@@ -171,13 +171,20 @@ def add_audio(version_dir_path, video_name, output_path, path_split):
             print(f"Error: {e}")
 
 # Removes the temporary png and videos used to create the dailies video
-def file_cleanup(version_dir_path, video_name):
+def file_cleanup(version_dir_path, video_name, output_path, audio_choice):
     template_png = f"{version_dir_path}0000.png"
     template_video = f"{version_dir_path}template_intro_card.mp4"
     img_seq_video = f"{version_dir_path}{video_name}"
 
     delete_files = [template_png, template_video, img_seq_video]
-
+    
+    # If there is audio delete the output folder img seq video with audio
+    if audio_choice == "y":
+        vid_no_audio = f"{output_path}/{video_name}"
+        delete_files.append(vid_no_audio)
+    else:
+        pass
+    
     # rm on a list of file paths
     try:
         subprocess.run(["rm"] + delete_files, check=True)
@@ -226,7 +233,7 @@ def main():
     else:
         pass
 
-    file_cleanup(version_dir_path, video_name)
+    file_cleanup(version_dir_path, video_name, output_path, audio_choice)
 
 if __name__ == "__main__":
    main()
