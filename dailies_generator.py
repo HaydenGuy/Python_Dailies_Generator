@@ -101,11 +101,17 @@ def create_video_from_img_sequence(version_dir_path, path_split):
     # ffmpeg command 
     command = [
         "ffmpeg",
-        "-framerate", "24",
-        "-i", input_pattern, 
-        "-c:v", "libx264",
-        "-pix_fmt", "yuv420p",
-        f"{version_dir_path}/{video_name}"
+        "-framerate", "24",                 # Frame rate 24 fps
+        "-i", input_pattern,                # Input pattern is the files 0001... in verrsion dir
+        "-vf",                              # Video filter draw: video name, timestamp, frame number
+        f"""
+            drawtext=fontfile={FONT_PATH}:text='{video_name}':x=10:y=10:fontsize=30:fontcolor=white,
+            drawtext=fontfile={FONT_PATH}:text='%{{pts\\:hms}}':x=0:y=65:fontsize=30:fontcolor=white,
+            drawtext=fontfile={FONT_PATH}:text='Frame\\: %{{n}}':x=7:y=100:fontsize=26:fontcolor=white
+        """,
+        "-c:v", "libx264",                  # Video codec
+        "-pix_fmt", "yuv420p",              # Ensure compatibility with most players
+        f"{version_dir_path}/{video_name}"  # Output video file
     ]
 
     # Tries to run the ffmpeg command with subprocess
