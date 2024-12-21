@@ -70,7 +70,7 @@ def template_fill(version_dir_path, root_path, path_split):
     draw.text(notes_pos, notes_text, fill="black", font=small_font)
 
     # Set the name of the output file
-    template_output = f"{version_dir_path}0000.png"
+    template_output = f"{version_dir_path}/0000.png"
 
     # Save the output file as png
     template.save(template_output, format="PNG")
@@ -126,8 +126,8 @@ def create_video_from_img_sequence(version_dir_path, path_split):
 def combine_intro_card_and_version_video(version_dir_path, video_name, output_path):
     command = [
         "ffmpeg",
-        "-i", f"{version_dir_path}template_intro_card.mp4", # First input video
-        "-i", f"{version_dir_path}{video_name}",            # Second input video
+        "-i", f"{version_dir_path}/template_intro_card.mp4", # First input video
+        "-i", f"{version_dir_path}/{video_name}",            # Second input video
         "-filter_complex",                                  # Advanced export options
         "[0:v:0][1:v:0]concat=n=2:v=1:a=0[outv]",           # Concatenate first and second video
         "-map", "[outv]",                                   # Map the concatenated video stream to the output file
@@ -179,9 +179,9 @@ def add_audio(version_dir_path, video_name, output_path, path_split):
 
 # Removes the temporary png and videos used to create the dailies video
 def file_cleanup(version_dir_path, video_name, output_path, audio_choice):
-    template_png = f"{version_dir_path}0000.png"
-    template_video = f"{version_dir_path}template_intro_card.mp4"
-    img_seq_video = f"{version_dir_path}{video_name}"
+    template_png = f"{version_dir_path}/0000.png"
+    template_video = f"{version_dir_path}/template_intro_card.mp4"
+    img_seq_video = f"{version_dir_path}/{video_name}"
 
     delete_files = [template_png, template_video, img_seq_video]
     
@@ -237,8 +237,6 @@ def main():
     # If there is audio to add run the add audio function
     if audio_choice == "y":
         add_audio(version_dir_path, video_name, output_path, path_split)
-    else:
-        pass
 
     file_cleanup(version_dir_path, video_name, output_path, audio_choice)
 
